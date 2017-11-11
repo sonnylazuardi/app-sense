@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"react": "16.0.0",
+		"react-jsx-parser": "^1.1.5",
 		"react-native": "0.50.0"
 	},
 	"devDependencies": {
