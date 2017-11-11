@@ -6,7 +6,7 @@
 
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, Switch, Button } from "react-native";
-import JsxParser from "react-jsx-parser";
+import JsxParser from "./lib/jsxParser/components/JsxParser";
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
