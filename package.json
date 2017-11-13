@@ -1,22 +1,26 @@
 {
-	"name": "AppSense",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
-	},
-	"dependencies": {
-		"react": "16.0.0",
-		"react-native": "0.50.0"
-	},
-	"devDependencies": {
-		"babel-jest": "21.2.0",
-		"babel-preset-react-native": "4.0.0",
-		"jest": "21.2.1",
-		"react-test-renderer": "16.0.0"
-	},
-	"jest": {
-		"preset": "react-native"
-	}
+  "name": "AppSense",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "flow": "flow"
+  },
+  "dependencies": {
+    "acorn-jsx": "^4.1.0",
+    "react": "16.0.0",
+    "react-native": "0.50.0",
+    "react-native-sortable-list": "0.0.18"
+  },
+  "devDependencies": {
+    "babel-jest": "21.2.0",
+    "babel-preset-react-native": "4.0.0",
+    "flow-bin": "^0.59.0",
+    "jest": "21.2.1",
+    "react-test-renderer": "16.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
 }
