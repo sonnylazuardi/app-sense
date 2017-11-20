@@ -496,6 +496,7 @@ export default class App extends Component<{}> {
         ) : (
           <View style={{ flex: 1 }}>
             <LogicScreen
+              states={this.state.state}
               logics={this.state.logics}
               onSaveLogic={(logicKey, code, xml) => {
                 this.setState({
