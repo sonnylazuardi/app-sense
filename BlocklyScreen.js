@@ -39,7 +39,6 @@ export default class BlocklyScreen extends Component<{}> {
       if (title.length > 1) {
         var code = title[0];
         var xml = title[1];
-        console.log("CODE", code);
         this.setState({
           code,
           xml
@@ -56,16 +55,36 @@ export default class BlocklyScreen extends Component<{}> {
     let source = {
       uri: `file:///android_asset/blockly/index.html#/?${uuid.v4()}`
     };
+    const blocklyStart = `Blockly.Blocks['start'] = {
+      init: function() {
+        this.setColour(250);
+        this.appendDummyInput()
+          .setAlign(Blockly.ALIGN_CENTRE)
+          .appendField('${this.props.logicKey}');
+
+        this.appendStatementInput('statement');
+
+        this.setDeletable(false);
+      }
+    };`;
     const injectedJavaScript = this.state.xml.length
       ? `
+    ${blocklyStart}
     window.onload = function() {
       var xml_text = '${this.state.xml.replace(/\'/g, `\'`)}';
       var xml = Blockly.Xml.textToDom(xml_text);
       demoWorkspace.clear();
       Blockly.Xml.domToWorkspace(xml, demoWorkspace);
     }
-  `
-      : "";
+`
+      : `
+    ${blocklyStart}
+    window.onload = function() {
+      demoWorkspace.clear();
+      var startBlock = Blockly.Block.obtain(demoWorkspace, 'start');
+      startBlock.initSvg();
+      startBlock.render();
+    }`;
     return (
       <View style={styles.container}>
         <View style={styles.toolbar}>
