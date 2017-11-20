@@ -30,7 +30,8 @@ export default class RunScreen extends Component<{}> {
           <Text
             style={{
               fontSize: component.fontSize.value,
-              color: component.color.value
+              color: component.color.value,
+              padding: 10
             }}
           >
             {component.text.type == "state" ? (
@@ -43,7 +44,10 @@ export default class RunScreen extends Component<{}> {
         break;
       case "Switch":
         return (
-          <View style={{ flexDirection: "row" }}>
+          <View style={{
+            flexDirection: "row",
+            padding: 10
+          }}>
             <Switch
               value={
                 component.value.type == "state" ? (
@@ -82,6 +86,9 @@ export default class RunScreen extends Component<{}> {
       case "Button":
         return (
           <Button
+            style={{
+              padding: 10
+            }}
             title={
               component.title.type == "state" ? (
                 this.state[component.title.value]
