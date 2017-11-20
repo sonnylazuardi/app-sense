@@ -103,7 +103,7 @@ var styles = StyleSheet.create({
         borderTopRightRadius: entryBorderRadius
     },
     imageContainerEven: {
-        backgroundColor: '#000'
+        backgroundColor: '#075e9b'
     },
     image: {
         // ...StyleSheet.absoluteFillObject,
@@ -122,7 +122,7 @@ var styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     radiusMaskEven: {
-        backgroundColor: '#000'
+        backgroundColor: '#075e9b'
     },
     textContainer: {
         justifyContent: 'center',
@@ -134,7 +134,7 @@ var styles = StyleSheet.create({
         borderBottomRightRadius: entryBorderRadius
     },
     textContainerEven: {
-        backgroundColor: '#000'
+        backgroundColor: '#075e9b'
     },
     title: {
         color: '#000',

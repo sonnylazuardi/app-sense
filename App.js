@@ -23,33 +23,33 @@ import SliderEntry from './SliderEntry';
 
 const ENTRIES1 = [
     {
-        title: 'Beautiful and dramatic Antelope Canyon',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-        illustration: require('AppSense/assets/bg1.jpg'),
+        title: 'Create New Project',
+        subtitle: 'Learn and create real app now',
+        illustration: require('AppSense/assets/create.jpg'),
         navigateTo: 'MainApp'
     },
     {
-        title: 'Earlier this morning, NYC',
-        subtitle: 'Lorem ipsum dolor sit amet',
-        illustration: require('AppSense/assets/bg2.jpg'),
+        title: 'My past project',
+        subtitle: 'Coming soon',
+        illustration: require('AppSense/assets/history.jpg'),
         navigateTo: 'MainApp'
     },
     {
-        title: 'White Pocket Sunset',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
-        illustration: require('AppSense/assets/bg3.jpg'),
+        title: 'Watch tutorial',
+        subtitle: 'Coming soon',
+        illustration: require('AppSense/assets/tutorial.jpg'),
         navigateTo: 'MainApp'
     },
     {
-        title: 'Acrocorinth, Greece',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-        illustration: require('AppSense/assets/bg4.jpg'),
+        title: 'Shared project',
+        subtitle: 'Coming soon',
+        illustration: require('AppSense/assets/share.jpg'),
         navigateTo: 'MainApp'
     },
     {
-        title: 'The lone tree, majestic landscape of New Zealand',
-        subtitle: 'Lorem ipsum dolor sit amet',
-        illustration: require('AppSense/assets/bg5.jpg'),
+        title: 'Help',
+        subtitle: 'Get help',
+        illustration: require('AppSense/assets/help.jpg'),
         navigateTo: 'MainApp'
     },
 ];
@@ -113,7 +113,7 @@ export default class App extends Component<{}> {
                         sliderWidth={sliderWidth}
                         itemWidth={itemWidth}
                         hasParallaxImages={true}
-                        firstItem={1}
+                        firstItem={0}
                         inactiveSlideScale={0.94}
                         inactiveSlideOpacity={0.7}
                         enableMomentum={false}
