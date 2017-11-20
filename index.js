@@ -1,4 +1,15 @@
-import { AppRegistry } from 'react-native';
+import {
+    AppRegistry
+} from 'react-native';
+import {
+    StackNavigator,
+} from 'react-navigation';  
 import App from './App';
+import MainApp from './MainApp';
 
-AppRegistry.registerComponent('AppSense', () => App);
+const Appz = StackNavigator({
+    App: { screen: App },
+    MainApp: { screen: MainApp },
+});
+
+AppRegistry.registerComponent('AppSense', () => Appz);
