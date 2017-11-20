@@ -94,7 +94,14 @@ export default class App extends Component<{}> {
                 color: component.color.value
               }}
             >
-              {component.text.value}
+              {component.text.type == "state" ? (
+                // this.state.state[component.text.value]
+                this.state.state.filter(
+                  state => state.name == component.text.value
+                )[0].value
+              ) : (
+                component.text.value
+              )}
             </Text>
           </View>
         );
@@ -269,10 +276,11 @@ export default class App extends Component<{}> {
     return (
       <View style={styles.overlay}>
         <PropsScreen
+          state={this.state.state}
           activeComponent={activeComponent}
           component={component}
           onBack={() => this.setState({ showPropsScreen: false })}
-          onSave={(activeComponent, key, value) => {
+          onSave={(activeComponent, key, value, type) => {
             if (activeComponent == -1) {
               this.setState({
                 toolbar: {
@@ -288,7 +296,7 @@ export default class App extends Component<{}> {
                       ...component,
                       ...{
                         [key]: {
-                          type: "value",
+                          type: type,
                           value: value
                         }
                       }
