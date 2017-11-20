@@ -39,7 +39,7 @@ const data = {
       },
       color: {
         type: "value",
-        value: "#2ecc71"
+        value: "#075e9b"
       },
       fontSize: {
         type: "value",
@@ -71,7 +71,7 @@ const data = {
       },
       color: {
         type: "value",
-        value: "#2ecc71"
+        value: "#075e9b"
       }
     }
   ]

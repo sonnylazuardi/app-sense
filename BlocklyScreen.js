@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     height: 56,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     alignItems: "center",
     elevation: 3
