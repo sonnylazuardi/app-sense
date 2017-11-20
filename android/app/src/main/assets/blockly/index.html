@@ -57,85 +57,85 @@
       <block type="math_number"></block>
       <block type="math_arithmetic">
         <value name="A">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">1</field>
-          </shadow>
+          </block>
         </value>
         <value name="B">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">1</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_single">
         <value name="NUM">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">9</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_trig">
         <value name="NUM">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">45</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_constant"></block>
       <block type="math_number_property">
         <value name="NUMBER_TO_CHECK">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">0</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_round">
         <value name="NUM">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">3.1</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_on_list"></block>
       <block type="math_modulo">
         <value name="DIVIDEND">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">64</field>
-          </shadow>
+          </block>
         </value>
         <value name="DIVISOR">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">10</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_constrain">
         <value name="VALUE">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">50</field>
-          </shadow>
+          </block>
         </value>
         <value name="LOW">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">1</field>
-          </shadow>
+          </block>
         </value>
         <value name="HIGH">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">100</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_random_int">
         <value name="FROM">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">1</field>
-          </shadow>
+          </block>
         </value>
         <value name="TO">
-          <shadow type="math_number">
+          <block type="math_number">
             <field name="NUM">100</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="math_random_float"></block>
@@ -145,21 +145,21 @@
       <block type="text_join"></block>
       <block type="text_append">
         <value name="TEXT">
-          <shadow type="text"></shadow>
+          <block>
         </value>
       </block>
       <block type="text_length">
         <value name="VALUE">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_isEmpty">
         <value name="VALUE">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT"></field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_indexOf">
@@ -169,9 +169,9 @@
           </block>
         </value>
         <value name="FIND">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_charAt">
@@ -190,43 +190,61 @@
       </block>
       <block type="text_changeCase">
         <value name="TEXT">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_trim">
         <value name="TEXT">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_print">
         <value name="TEXT">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="text_prompt_ext">
         <value name="TEXT">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">abc</field>
-          </shadow>
+          </block>
         </value>
       </block>
     </category>
     <category name="Loops" colour="120">
-        <block type="controls_repeat_ext">
-          <value name="TIMES">
-            <block type="math_number">
-              <field name="NUM">10</field>
-            </block>
-          </value>
-        </block>
-        <block type="controls_forEach"></block>
-        <block type="controls_flow_statements"></block>
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <value name="FROM">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="TO">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+        <value name="BY">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
     </category>
     <category name="Lists" colour="260">
       <block type="lists_create_with">
@@ -235,46 +253,9 @@
       <block type="lists_create_with"></block>
       <block type="lists_repeat">
         <value name="NUM">
-          <shadow type="math_number">
-            <field name="NUM">5</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="lists_length"></block>
-      <block type="lists_isEmpty"></block>
-      <block type="lists_indexOf">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">list</field>
-          </block>
-        </value>
-      </block>
-      <block type="lists_getIndex">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">list</field>
-          </block>
-        </value>
-      </block>
-      <block type="lists_setIndex">
-        <value name="LIST">
-          <block type="variables_get">
-            <field name="VAR">list</field>
-          </block>
-        </value>
-      </block>
-      <block type="lists_getSublist">
-        <value name="LIST">
-          <block type="variables_get">
-            <field name="VAR">list</field>
-          </block>
-        </value>
-      </block>
-      <block type="lists_split">
-        <value name="DELIM">
-          <shadow type="text">
+          <block type="text">
             <field name="TEXT">,</field>
-          </shadow>
+          </block>
         </value>
       </block>
       <block type="lists_sort"></block>
@@ -469,7 +450,7 @@ startBlock.initSvg();
 startBlock.render();
 
 function myUpdateFunction(event) {
-  var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+  var code = encodeURI(Blockly.JavaScript.workspaceToCode(demoWorkspace));
   document.getElementById("textarea").value = code;
   var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
   var xml_text = Blockly.Xml.domToText(xml);
