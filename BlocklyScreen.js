@@ -38,7 +38,7 @@ export default class BlocklyScreen extends Component<{}> {
     if (navState.title) {
       var title = navState.title.split("<|>");
       if (title.length > 1) {
-        var code = title[0];
+        var code = decodeURI(title[0]);
         var xml = title[1];
         this.setState({
           code,
@@ -48,7 +48,7 @@ export default class BlocklyScreen extends Component<{}> {
     }
   };
   _onSave() {
-    console.log("SAVED", this.state.code);
+    console.log({ code: this.state.code });
     console.log("XML", this.state.xml);
     this.props.onSave(this.props.logicKey, this.state.code, this.state.xml);
   }
