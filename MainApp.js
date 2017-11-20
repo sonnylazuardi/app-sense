@@ -34,6 +34,11 @@ import data from "./data";
 const window = Dimensions.get("window");
 
 export default class App extends Component<{}> {
+
+  static navigationOptions = {
+    header: null
+  };
+
   state = {
     state: data.state,
     components: data.components,
