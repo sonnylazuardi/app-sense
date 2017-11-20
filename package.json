@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "acorn-jsx": "^4.1.0",
+    "mustache": "^2.3.0",
     "react": "16.0.0",
     "react-native": "0.50.0",
     "react-native-sortable-list": "0.0.18"
