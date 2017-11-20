@@ -18,40 +18,47 @@ import {
   Easing,
   ScrollView,
   Dimensions,
-  TextInput
+  TextInput,
+  Picker
 } from "react-native";
+
+const Item = Picker.Item;
 
 const COMPONENT_PROPS = {
   Button: ["title", "color"],
   Toolbar: ["title", "color"],
   Text: ["text", "color", "fontSize"],
-  Switch: ["text", "color", "fontSize"]
+  Switch: ["text", "color", "fontSize", "value"]
 };
 
 export default class PropsScreen extends Component<{}> {
   state = {
     currentKey: null,
-    currentValue: null
+    currentValue: null,
+    currentType: null
   };
 
   _selectItem(prop) {
     this.setState({
       currentKey: prop,
-      currentValue: this.props.component[prop].value + ""
+      currentValue: this.props.component[prop].value + "",
+      currentType: this.props.component[prop].type
     });
   }
 
   _save() {
-    let currentValue = this.state.currentValue;
+    let { currentValue, currentType } = this.state;
     if (this.isNumeric(currentValue)) currentValue = Number(currentValue);
     this.props.onSave(
       this.props.activeComponent,
       this.state.currentKey,
-      currentValue
+      currentValue,
+      currentType
     );
     this.setState({
       currentKey: null,
-      currentValue: null
+      currentValue: null,
+      currentType: null
     });
   }
 
@@ -62,7 +69,8 @@ export default class PropsScreen extends Component<{}> {
   _cancel() {
     this.setState({
       currentKey: null,
-      currentValue: null
+      currentValue: null,
+      currentType: null
     });
   }
 
@@ -108,13 +116,37 @@ export default class PropsScreen extends Component<{}> {
             />
             <View style={styles.panel}>
               <Text style={styles.panelTitleText}>{this.state.currentKey}</Text>
-              <TextInput
-                style={styles.input}
-                value={this.state.currentValue}
-                onChangeText={currentValue => this.setState({ currentValue })}
-              />
+              {this.state.currentType == "state" ? (
+                <Picker
+                  style={styles.input}
+                  mode="dropdown"
+                  // itemStyle={styles.pickerItemStyle}
+                  selectedValue={this.state.currentValue}
+                  onValueChange={currentValue => {
+                    this.setState({
+                      currentValue
+                    });
+                  }}
+                >
+                  {this.props.state.map((state, i) => {
+                    return (
+                      <Item key={i} label={state.name} value={state.name} />
+                    );
+                  })}
+                </Picker>
+              ) : (
+                <TextInput
+                  style={styles.input}
+                  value={this.state.currentValue}
+                  onChangeText={currentValue => this.setState({ currentValue })}
+                />
+              )}
               <View style={styles.option}>
-                <Switch value={false} />
+                <Switch
+                  value={this.state.currentType == "state"}
+                  onValueChange={value =>
+                    this.setState({ currentType: value ? "state" : "value" })}
+                />
                 <Text style={styles.panelText}>take from state</Text>
               </View>
               <View style={styles.actions}>

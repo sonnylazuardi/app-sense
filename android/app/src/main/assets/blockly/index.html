@@ -25,8 +25,10 @@
   <xml id="toolbox" style="display: none">
     <category name="Functions">
       <block type="set_state"></block>
+      <block type="get_state"></block>
       <block type="text"></block>
       <block type="text_alert"></block>
+      <block type="text_value"></block>
       <block type="math_number"></block>
       <block type="math_arithmetic"></block>
       <block type="string_length"></block>
@@ -145,6 +147,51 @@ Blockly.JavaScript["set_state"] = function(block) {
   return "this.setState({" + argKey + ": " + argValue + "});\n";
 };
 
+Blockly.Blocks['get_state'] = {
+  init: function() {
+    this.jsonInit({
+      "type": "get_state",
+      "message0": "state %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "VALUE",
+          "options": [
+            [
+              "option 1",
+              "option 1"
+            ],
+            [
+              "option 2",
+              "option 2"
+            ],
+            [
+              "option 3",
+              "option 3"
+            ]
+          ]
+        }
+      ],
+      "inputsInline": true,
+      "output": null,
+      "colour": 230,
+      "tooltip": "",
+      "helpUrl": ""
+    });
+  }
+};
+
+Blockly.JavaScript['get_state'] = function(block) {
+  // String or array length.
+  var argValue =
+  Blockly.JavaScript.valueToCode(
+    block,
+    "VALUE",
+    Blockly.JavaScript.ORDER_ATOMIC
+  ) || "''";
+  return "this.state." + argValue;
+};
+
 Blockly.Blocks["text_alert"] = {
   init: function() {
     this.appendValueInput("message").appendField("alert");
@@ -167,6 +214,25 @@ Blockly.JavaScript["text_alert"] = function(block) {
       Blockly.JavaScript.ORDER_ATOMIC
     ) || "''";
   return "alert(" + argMessage + ");\n";
+};
+
+Blockly.Blocks["text_value"] = {
+  init: function() {
+    this.jsonInit({
+      type: "variable",
+      message0: "value",
+      inputsInline: true,
+      output: null,
+      colour: 230,
+      tooltip: "",
+      helpUrl: ""
+    });
+  }
+};
+
+Blockly.JavaScript["text_value"] = function(block) {
+  // String or array length.
+  return ["value", Blockly.JavaScript.ORDER_NONE];
 };
 
 var demoWorkspace = Blockly.inject("blocklyDiv", {

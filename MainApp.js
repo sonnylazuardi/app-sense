@@ -27,22 +27,12 @@ import RunScreen from "./RunScreen";
 import LogicScreen from "./LogicScreen";
 import StateScreen from "./StateScreen";
 import BlocklyScreen from "./BlocklyScreen";
+import CodeScreen from "./CodeScreen";
 import data from "./data";
 
 const window = Dimensions.get("window");
 
-export default class MainApp extends Component<{}> {
-
-  static navigationOptions = {
-    headerTitle: (
-        <Image source={require("AppSense/assets/logo.png")} style={{height: 50, width: 50, alignSelf:'center'}}/>
-    ),
-    headerTintColor: '#fff',    
-    headerStyle: {
-        backgroundColor: '#075e9b'
-    }
-}
-
+export default class App extends Component<{}> {
   state = {
     state: data.state,
     components: data.components,
@@ -55,15 +45,10 @@ export default class MainApp extends Component<{}> {
       },
       button0_onPress: {
         name: "button0_onPress",
-        code: "",
-        xml: "",
+        code: "this.setState({counter: ((this.state.counter) + 1)});",
+        xml:
+          '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="start" id=";`rAwHMo8LMphV$j]%OV" deletable="false" x="0" y="0"><statement name="statement"><block type="set_state" id="5x)I!yqJ4!4,?-,kF?Nd"><field name="KEY">counter</field><value name="VALUE"><block type="math_arithmetic" id="fMK?*4B#=c~UZ(e_qS}p"><field name="OP">ADD</field><value name="A"><block type="get_state" id="^8vpzQO3hO%Nei8rDP5!"><field name="VALUE">counter</field></block></value><value name="B"><block type="math_number" id="%leaD0-Lc=rt,;C###`T"><field name="NUM">1</field></block></value></block></value></block></statement></block></xml>',
         description: "Button 0 onPress event."
-      },
-      switch0_onValueChange: {
-        name: "switch0_onValueChange",
-        code: "alert(value); this.setState({isAmpas: value});",
-        xml: "",
-        description: "Switch 0 onPress event."
       }
     },
     toolbar: {
@@ -74,6 +59,7 @@ export default class MainApp extends Component<{}> {
     counter: 1,
     showPropsScreen: false,
     showRunScreen: false,
+    showCodeScreen: false,
     showTabScreen: "VIEW"
   };
   _nextOrder = [];
@@ -87,7 +73,13 @@ export default class MainApp extends Component<{}> {
               color: component.color.value
             }}
           >
-            {component.text.value}
+            {component.text.type == "state" ? (
+              this.state.state.filter(
+                state => state.name == component.text.value
+              )[0].value
+            ) : (
+              component.text.value
+            )}
           </Text>
         );
         break;
@@ -105,7 +97,14 @@ export default class MainApp extends Component<{}> {
                 color: component.color.value
               }}
             >
-              {component.text.value}
+              {component.text.type == "state" ? (
+                // this.state.state[component.text.value]
+                this.state.state.filter(
+                  state => state.name == component.text.value
+                )[0].value
+              ) : (
+                component.text.value
+              )}
             </Text>
           </View>
         );
@@ -159,7 +158,7 @@ export default class MainApp extends Component<{}> {
           onPress: `button${this.state.counter}_onPress`,
           title: {
             type: "value",
-            value: "SUBMIT"
+            value: "Button " + this.state.counter
           },
           color: {
             type: "value",
@@ -187,13 +186,15 @@ export default class MainApp extends Component<{}> {
         ...this.state.components,
         {
           type: "Switch",
+          id: `switch${this.state.counter}`,
+          onValueChange: `switch${this.state.counter}_onValueChange`,
           value: {
             type: "value",
             value: false
           },
           text: {
             type: "value",
-            value: "Switch"
+            value: "Switch " + this.state.counter
           },
           color: {
             type: "value",
@@ -204,7 +205,19 @@ export default class MainApp extends Component<{}> {
             value: 15
           }
         }
-      ]
+      ],
+      logics: {
+        ...this.state.logics,
+        ...{
+          [`switch${this.state.counter}_onValueChange`]: {
+            name: `switch${this.state.counter}_onValueChange`,
+            code: "",
+            xml: "",
+            description: `Switch ${this.state.counter} onValueChange event.`
+          }
+        }
+      },
+      counter: this.state.counter + 1
     });
   }
   _addText() {
@@ -213,9 +226,10 @@ export default class MainApp extends Component<{}> {
         ...this.state.components,
         {
           type: "Text",
+          id: `text${this.state.counter}`,
           text: {
             type: "value",
-            value: "Teks baru"
+            value: "New Text " + this.state.counter
           },
           color: {
             type: "value",
@@ -226,7 +240,8 @@ export default class MainApp extends Component<{}> {
             value: 15
           }
         }
-      ]
+      ],
+      counter: this.state.counter + 1
     });
   }
   _removeComponent(activeComponent) {
@@ -260,6 +275,20 @@ export default class MainApp extends Component<{}> {
       </View>
     );
   }
+  _renderCodeScreen() {
+    if (!this.state.showCodeScreen) return null;
+    return (
+      <View style={styles.overlay}>
+        <CodeScreen
+          state={this.state.state}
+          logics={this.state.logics}
+          components={this.state.components}
+          toolbar={this.state.toolbar}
+          onBack={() => this.setState({ showCodeScreen: false })}
+        />
+      </View>
+    );
+  }
   _renderPropsScreen() {
     if (!this.state.showPropsScreen) return null;
     const activeComponent = this.state.activeComponent;
@@ -280,10 +309,11 @@ export default class MainApp extends Component<{}> {
     return (
       <View style={styles.overlay}>
         <PropsScreen
+          state={this.state.state}
           activeComponent={activeComponent}
           component={component}
           onBack={() => this.setState({ showPropsScreen: false })}
-          onSave={(activeComponent, key, value) => {
+          onSave={(activeComponent, key, value, type) => {
             if (activeComponent == -1) {
               this.setState({
                 toolbar: {
@@ -299,7 +329,7 @@ export default class MainApp extends Component<{}> {
                       ...component,
                       ...{
                         [key]: {
-                          type: "value",
+                          type: type,
                           value: value
                         }
                       }
@@ -315,40 +345,46 @@ export default class MainApp extends Component<{}> {
     );
   }
 
-  onStateCreateHandler(stateName, stateInitialValue) {
-    console.log("debug", {
-      stateName,
-      stateInitialValue
-    });
+  onStateCreateHandler(name, value) {
     const storedStates = this.state.state;
     storedStates.push({
-      name: stateName,
-      value: stateInitialValue
+      name: name,
+      value: value
     });
     this.setState({
       state: storedStates
     });
   }
 
+  onStateDeleteHandler(name) {
+    const storedStates = this.state.state;
+    for (var i = 0; i < storedStates.length; i++) {
+      if (storedStates[i].name === name) {
+        storedStates.splice(i, 1);
+        break;
+      }
+    }
+
+    this.setState({
+      state: storedStates
+    });
+  }
+
   render() {
-    // const buttonPressed = () => {
-    //   this.evalInContext(this.state.functionAmpas, this);
-    // };
     return (
       <View style={{ flex: 1 }}>
-        {/* <Text>{counter}</Text>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-        <Button title="Ganti HTML" onPress={this.onChangeHTML} />
-        <JsxParser
-          // bindings={{ onPress: buttonPressed }}
-          callbacks={{
-            buttonPressed
-          }}
-          components={{ Text, Switch, View, Button }}
-          jsx={this.state.htmlAmpas}
-        /> */}
+        <View style={styles.toolbar}>
+          <Text style={styles.toolbarText}>App Sense</Text>
+          <TouchableOpacity
+            style={styles.toolbarButton}
+            onPress={() => this.setState({ showCodeScreen: true })}
+          >
+            <Image
+              style={styles.toolbarIcon}
+              source={require("AppSense/assets/code.png")}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.tabbar}>
           <TouchableOpacity
             style={[
@@ -388,12 +424,13 @@ export default class MainApp extends Component<{}> {
           <View style={{ flex: 1 }}>
             <StateScreen
               onCreateHandler={this.onStateCreateHandler.bind(this)}
+              onDeleteHandler={this.onStateDeleteHandler.bind(this)}
               states={this.state.state}
             />
           </View>
         ) : this.state.showTabScreen == "VIEW" ? (
           <View style={styles.container}>
-            <View style={styles.toolbar}>
+            <View style={styles.toolbarLeft}>
               <TouchableOpacity
                 style={styles.toolButton}
                 onPress={() => this._addText()}
@@ -528,6 +565,7 @@ export default class MainApp extends Component<{}> {
           </View>
         )}
         {this._renderPropsScreen()}
+        {this._renderCodeScreen()}
         {this._renderRunScreen()}
 
         <TouchableOpacity
@@ -559,6 +597,36 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   toolbar: {
+    height: 56,
+    backgroundColor: "#075e9b",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 15,
+    elevation: 3
+  },
+  toolbarButton: {
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  toolbarIcon: {
+    width: 23,
+    height: 23,
+    tintColor: "#fff"
+  },
+  toolbarButton: {
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  toolbarText: {
+    fontWeight: "500",
+    color: "#fff",
+    flex: 1
+  },
+  toolbarLeft: {
     width: 100
   },
   list: {
@@ -632,12 +700,12 @@ const styles = StyleSheet.create({
     tintColor: "#fff"
   },
   tabbar: {
-    backgroundColor: "#7cc9e7",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     elevation: 3
   },
   tabbarButton: {
-    backgroundColor: "#7cc9e7",
+    backgroundColor: "#075e9b",
     flex: 1,
     height: 50,
     alignItems: "center",

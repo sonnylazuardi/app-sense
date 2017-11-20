@@ -18,41 +18,135 @@ import {
   Easing,
   ScrollView,
   Dimensions,
-  TextInput
+  TextInput,
+  ListView
 } from "react-native";
 
 export default class StateScreen extends Component<{}> {
-    state = { 
-        stateName: '',
-        stateInitialValue: '',
+  constructor(props) {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+    super(props);
+    this.state = {
+      ds: ds,
+      isChosen: false,
+      name: "",
+      value: "",
+      dataSource: ds.cloneWithRows(this.props.states)
     };
+  }
+
+  onItemPress(name, value) {
+    if (this.state.isChosen) {
+      if (name == this.state.name) {
+        this.setState({
+          isChosen: false,
+          name: "",
+          value: ""
+        });
+      } else {
+        if (value === true) value = "true";
+        if (value === false) value = "false";
+        if (this.isNumeric(value)) value = Number(value);
+        this.setState({
+          name: name,
+          value: value
+        });
+      }
+    } else {
+      if (value === true) value = "true";
+      if (value === false) value = "false";
+      if (this.isNumeric(value)) value = Number(value);
+      this.setState({
+        isChosen: true,
+        name: name,
+        value: value
+      });
+    }
+  }
+
+  isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  handleCreate(name, value) {
+    if (value === "true") value = true;
+    if (value === "false") value = false;
+    if (this.isNumeric(value)) value = Number(value);
+    this.props.onCreateHandler(name, value);
+    this.setState({
+      isChosen: false,
+      name: "",
+      value: "",
+      dataSource: this.state.ds.cloneWithRows(this.props.states)
+    });
+  }
+
+  handleDelete(name) {
+    this.props.onDeleteHandler(name);
+    this.setState({
+      isChosen: false,
+      name: "",
+      value: "",
+      dataSource: this.state.ds.cloneWithRows(this.props.states)
+    });
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(stateName) => this.setState({stateName})}
-            placeholder={'State Name'}
-            value={this.state.stateName}
+        <View style={styles.box}>
+          <TextInput
+            style={{ height: 40 }}
+            onChangeText={name => this.setState({ name })}
+            placeholder={"State Name"}
+            value={this.state.name}
+            editable={!this.state.isChosen}
+          />
+          <TextInput
+            style={{ height: 40 }}
+            onChangeText={value => this.setState({ value })}
+            placeholder={"State Value"}
+            value={this.state.value}
+            editable={!this.state.isChosen}
+          />
+          {this.state.isChosen ? (
+            <Button
+              onPress={() => {
+                const { name } = this.state;
+                this.handleDelete(name);
+              }}
+              title="Delete State"
+              color="red"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          ) : (
+            <Button
+              onPress={() => {
+                const { name, value } = this.state;
+                this.handleCreate(name, value);
+              }}
+              title={"Create State"}
+              color="#075e9b"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          )}
+        </View>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={rowData => (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => this.onItemPress(rowData.name, rowData.value)}
+            >
+              <Text style={{ color: "#000", fontWeight: "500" }}>
+                {rowData.name}
+              </Text>
+              <Text style={{ color: "#999" }}>{rowData.value}</Text>
+            </TouchableOpacity>
+          )}
         />
-        <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(stateInitialValue) => this.setState({stateInitialValue})}
-            placeholder={'State Initial Value'}
-            value={this.state.stateInitialValue}
-        />
-        <Button
-            onPress={() => {
-                this.props.onCreateHandler(this.state.stateName, this.state.stateInitialValue)}
-            }
-            title="Create State"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-        />
-        <Text>
-            {JSON.stringify(this.props.states)}
-        </Text>
       </View>
     );
   }
@@ -64,6 +158,9 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1
+  },
+  box: {
+    padding: 15
   },
   divider: {
     backgroundColor: "#fff",
@@ -88,18 +185,11 @@ const styles = StyleSheet.create({
     tintColor: "#555"
   },
   item: {
-    height: 80
-  },
-  itemWrapper: {
-    height: 80,
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  itemIconWrapper: {
-    width: 60,
     height: 60,
-    alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+    paddingHorizontal: 15
   },
   itemIcon: {
     width: 30,
@@ -107,9 +197,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#999",
     borderRadius: 20,
     marginHorizontal: 10
-  },
-  item: {
-    flex: 1
   },
   itemTitleText: {
     color: "#000",

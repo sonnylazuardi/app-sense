@@ -33,7 +33,11 @@ export default class RunScreen extends Component<{}> {
               color: component.color.value
             }}
           >
-            {component.text.value}
+            {component.text.type == "state" ? (
+              this.state[component.text.value]
+            ) : (
+              component.text.value
+            )}
           </Text>
         );
         break;
@@ -54,6 +58,11 @@ export default class RunScreen extends Component<{}> {
                   this,
                   value
                 );
+                if (component.value.type == "state") {
+                  const obj = {}
+                  obj[component.value.value] = value
+                  this.setState(obj)
+                }
               }}
             />
             <Text
@@ -62,15 +71,31 @@ export default class RunScreen extends Component<{}> {
                 color: component.color.value
               }}
             >
-              {component.text.value}
+              {component.text.type == "state" ? (
+                this.state[component.text.value]
+              ) : (
+                component.text.value
+              )}
             </Text>
           </View>
         );
       case "Button":
         return (
           <Button
-            title={component.title.value}
-            color={component.color.value}
+            title={
+              component.title.type == "state" ? (
+                this.state[component.title.value]
+              ) : (
+                component.title.value
+              )
+            }
+            color={
+              component.color.type == "state" ? (
+                this.state[component.color.value]
+              ) : (
+                component.color.value
+              )
+            }
             onPress={() => {
               this.evalInContext(
                 this.props.logics[component.onPress].code,
