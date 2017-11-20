@@ -52,21 +52,20 @@ export default class BlocklyScreen extends Component<{}> {
     console.log("XML", this.state.xml);
     this.props.onSave(this.props.logicKey, this.state.code, this.state.xml);
   }
-  _generateStateBlocks() {
-    console.log("STATE:", this.state)
-    var options = this.state.states.map(s => [s.name, s.value])
+  _generateSetStateJSON() {
+    var options = this.state.states.map(s => [s.name, s.name])
     return {
       type: "set_state",
       message0: "setState %1 value %2",
       args0: [
         {
           type: "field_dropdown",
-          name: "NAME",
+          name: "KEY",
           options: options,
         },
         {
           type: "input_value",
-          name: "NAME"
+          name: "VALUE"
         }
       ],
       inputsInline: true,
@@ -76,6 +75,56 @@ export default class BlocklyScreen extends Component<{}> {
       tooltip: "Set the given state to certain value.",
       helpUrl: "https://reactjs.org/docs/react-component.html#setstate"
     };
+  }
+  _generateSetStateBlocks() {
+    return  `
+      Blockly.Blocks["set_state"] = {
+        init: function() {
+          this.jsonInit(${JSON.stringify(this._generateSetStateJSON())})
+        }
+      };
+      Blockly.JavaScript["set_state"] = function(block) {
+        var argKey = block.getFieldValue('KEY');
+        var argValue =
+          Blockly.JavaScript.valueToCode(
+            block,
+            "VALUE",
+            Blockly.JavaScript.ORDER_ATOMIC
+          ) || "''";
+        return "this.setState({" + argKey + ": " + argValue + "});\n";
+      };
+    `;
+  }
+  _generateGetStateJSON() {
+    var options = this.state.states.map(s => [s.name, s.name])
+    return {
+      type: "get_state",
+      message0: "state %1",
+      args0: [
+        {
+          type: "field_dropdown",
+          name: "VALUE",
+          options: options,
+        }
+      ],
+      inputsInline: true,
+      output: null,
+      colour: 230,
+      tooltip: "Get a state value.",
+      helpUrl: "https://reactjs.org/docs/react-component.html"
+    };
+  }
+  _generateGetStateBlocks() {
+    return  `
+      Blockly.Blocks["get_state"] = {
+        init: function() {
+          this.jsonInit(${JSON.stringify(this._generateGetStateJSON())})
+        }
+      };
+      Blockly.JavaScript["get_state"] = function(block) {
+        return ["this.state." + block.getFieldValue('VALUE'), Blockly.JavaScript.ORDER_NONE];
+      };
+    `;
   }
   render() {
     let source = {
@@ -93,16 +142,13 @@ export default class BlocklyScreen extends Component<{}> {
         this.setDeletable(false);
       }
     };`;
-    const blocklyStates = `
-      Blockly.Blocks["set_state"] = {
-        init: function() {
-          this.jsonInit(${JSON.stringify(this._generateStateBlocks())})
-        }
-      };`
+    const blocklySetStates = this._generateSetStateBlocks();
+    const blocklyGetStates = this._generateGetStateBlocks();
     const injectedJavaScript = this.state.xml.length
       ? `
     ${blocklyStart}
-    ${blocklyStates}
+    ${blocklySetStates}
+    ${blocklyGetStates}
     window.onload = function() {
       var xml_text = '${this.state.xml.replace(/\'/g, `\'`)}';
       var xml = Blockly.Xml.textToDom(xml_text);
@@ -112,14 +158,15 @@ export default class BlocklyScreen extends Component<{}> {
 `
 : `
     ${blocklyStart}
-    ${blocklyStates}
+    ${blocklySetStates}
+    ${blocklyGetStates}
     window.onload = function() {
       demoWorkspace.clear();
       var startBlock = Blockly.Block.obtain(demoWorkspace, 'start');
       startBlock.initSvg();
       startBlock.render();
     }`;
-    console.log('states:', blocklyStates)
+    // console.log('states:', blocklyStates)
     return (
       <View style={styles.container}>
         <View style={styles.toolbar}>
