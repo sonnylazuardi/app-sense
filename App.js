@@ -17,7 +17,8 @@ import {
   Image,
   Easing,
   ScrollView,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from "react-native";
 import JsxParser from "./lib/jsxParser/components/JsxParser";
 import SortableList from "react-native-sortable-list";
@@ -373,6 +374,7 @@ export default class App extends Component<{}> {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar backgroundColor="#3949AB" barStyle="light-content" />
         <View style={styles.toolbar}>
           <Text style={styles.toolbarText}>App Sense</Text>
           <TouchableOpacity
