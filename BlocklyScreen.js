@@ -54,7 +54,7 @@ export default class BlocklyScreen extends Component<{}> {
   }
   _generateStateBlocks() {
     console.log("STATE:", this.state)
-    var options = this.state.states.map(s => [s.name, "OPTIONNAME"])
+    var options = this.state.states.map(s => [s.name, s.value])
     return {
       type: "set_state",
       message0: "setState %1 value %2",
