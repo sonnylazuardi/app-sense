@@ -184,6 +184,8 @@ export default class App extends Component<{}> {
         ...this.state.components,
         {
           type: "Switch",
+          id: `switch${this.state.counter}`,
+          onValueChange: `switch${this.state.counter}_onValueChange`,
           value: {
             type: "value",
             value: false
@@ -201,7 +203,19 @@ export default class App extends Component<{}> {
             value: 15
           }
         }
-      ]
+      ],
+      logics: {
+        ...this.state.logics,
+        ...{
+          [`switch${this.state.counter}_onValueChange`]: {
+            name: `switch${this.state.counter}_onValueChange`,
+            code: "",
+            xml: "",
+            description: `Switch ${this.state.counter} onValueChange event.`
+          }
+        }
+      },
+      counter: this.state.counter + 1
     });
   }
   _addText() {
@@ -210,6 +224,7 @@ export default class App extends Component<{}> {
         ...this.state.components,
         {
           type: "Text",
+          id: `text${this.state.counter}`,
           text: {
             type: "value",
             value: "New Text " + this.state.counter
@@ -223,7 +238,8 @@ export default class App extends Component<{}> {
             value: 15
           }
         }
-      ]
+      ],
+      counter: this.state.counter + 1
     });
   }
   _removeComponent(activeComponent) {
