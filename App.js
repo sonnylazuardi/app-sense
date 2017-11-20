@@ -27,6 +27,7 @@ import RunScreen from "./RunScreen";
 import LogicScreen from "./LogicScreen";
 import StateScreen from "./StateScreen";
 import BlocklyScreen from "./BlocklyScreen";
+import CodeScreen from "./CodeScreen";
 import data from "./data";
 
 const window = Dimensions.get("window");
@@ -58,6 +59,7 @@ export default class App extends Component<{}> {
     counter: 1,
     showPropsScreen: false,
     showRunScreen: false,
+    showCodeScreen: false,
     showTabScreen: "VIEW"
   };
   _nextOrder = [];
@@ -257,6 +259,20 @@ export default class App extends Component<{}> {
       </View>
     );
   }
+  _renderCodeScreen() {
+    if (!this.state.showCodeScreen) return null;
+    return (
+      <View style={styles.overlay}>
+        <CodeScreen
+          state={this.state.state}
+          logics={this.state.logics}
+          components={this.state.components}
+          toolbar={this.state.toolbar}
+          onBack={() => this.setState({ showCodeScreen: false })}
+        />
+      </View>
+    );
+  }
   _renderPropsScreen() {
     if (!this.state.showPropsScreen) return null;
     const activeComponent = this.state.activeComponent;
@@ -339,24 +355,20 @@ export default class App extends Component<{}> {
   }
 
   render() {
-    // const buttonPressed = () => {
-    //   this.evalInContext(this.state.functionAmpas, this);
-    // };
     return (
       <View style={{ flex: 1 }}>
-        {/* <Text>{counter}</Text>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-        <Button title="Ganti HTML" onPress={this.onChangeHTML} />
-        <JsxParser
-          // bindings={{ onPress: buttonPressed }}
-          callbacks={{
-            buttonPressed
-          }}
-          components={{ Text, Switch, View, Button }}
-          jsx={this.state.htmlAmpas}
-        /> */}
+        <View style={styles.toolbar}>
+          <Text style={styles.toolbarText}>App Sense</Text>
+          <TouchableOpacity
+            style={styles.toolbarButton}
+            onPress={() => this.setState({ showCodeScreen: true })}
+          >
+            <Image
+              style={styles.toolbarIcon}
+              source={require("AppSense/assets/code.png")}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.tabbar}>
           <TouchableOpacity
             style={[
@@ -402,7 +414,7 @@ export default class App extends Component<{}> {
           </View>
         ) : this.state.showTabScreen == "VIEW" ? (
           <View style={styles.container}>
-            <View style={styles.toolbar}>
+            <View style={styles.toolbarLeft}>
               <TouchableOpacity
                 style={styles.toolButton}
                 onPress={() => this._addText()}
@@ -537,6 +549,7 @@ export default class App extends Component<{}> {
           </View>
         )}
         {this._renderPropsScreen()}
+        {this._renderCodeScreen()}
         {this._renderRunScreen()}
 
         <TouchableOpacity
@@ -568,6 +581,36 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   toolbar: {
+    height: 56,
+    backgroundColor: "#075e9b",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 15,
+    elevation: 3
+  },
+  toolbarButton: {
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  toolbarIcon: {
+    width: 23,
+    height: 23,
+    tintColor: "#fff"
+  },
+  toolbarButton: {
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  toolbarText: {
+    fontWeight: "500",
+    color: "#fff",
+    flex: 1
+  },
+  toolbarLeft: {
     width: 100
   },
   list: {
