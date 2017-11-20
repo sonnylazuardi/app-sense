@@ -57,7 +57,7 @@ export default class App extends Component<{}> {
     },
     toolbar: {
       title: "My Application",
-      color: "#2ecc71"
+      color: "#075e9b"
     },
     activeComponent: null,
     counter: 1,
@@ -159,7 +159,7 @@ export default class App extends Component<{}> {
           },
           color: {
             type: "value",
-            value: "#2ecc71"
+            value: "#075e9b"
           }
         }
       ],
@@ -489,7 +489,7 @@ export default class App extends Component<{}> {
                 <View style={{ width: 10 }} />
                 <Button
                   title="PROPS"
-                  color="#2ecc71"
+                  color="#075e9b"
                   onPress={() => this.setState({ showPropsScreen: true })}
                 />
                 <View style={{ width: 10 }} />
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     justifyContent: "center",
     paddingHorizontal: 15,
     elevation: 3
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
   },
   buttonFab: {
     elevation: 5,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     borderRadius: 25,
     height: 50,
     width: 50,
@@ -629,12 +629,12 @@ const styles = StyleSheet.create({
     tintColor: "#fff"
   },
   tabbar: {
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     elevation: 3
   },
   tabbarButton: {
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flex: 1,
     height: 50,
     alignItems: "center",
