@@ -64,18 +64,16 @@
 Blockly.Blocks["start"] = {
   init: function() {
     this.setColour(250);
-    this.appendDummyInput()
-      .setAlign(Blockly.ALIGN_CENTRE)
-      .appendField("componentDidMount");
+    this.appendDummyInput().setAlign(Blockly.ALIGN_CENTRE);
 
-    this.appendStatementInput("didMount");
+    this.appendStatementInput("statement");
 
     this.setDeletable(false);
   }
 };
 
 Blockly.JavaScript["start"] = function(block) {
-  var statements = Blockly.JavaScript.statementToCode(block, "didMount");
+  var statements = Blockly.JavaScript.statementToCode(block, "statement");
   // TODO: Assemble JavaScript into code variable.
   var code = statements;
   return code;

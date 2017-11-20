@@ -42,11 +42,17 @@ export default class App extends Component<{}> {
         xml: "",
         description: "invoked immediately after a component is mounted."
       },
-      button1_onPress: {
-        name: "button1_onPress",
+      button0_onPress: {
+        name: "button0_onPress",
         code: "",
         xml: "",
-        description: "Button 1 onPress event."
+        description: "Button 0 onPress event."
+      },
+      switch0_onValueChange: {
+        name: "switch0_onValueChange",
+        code: "alert(value); this.setState({isAmpas: value});",
+        xml: "",
+        description: "Switch 0 onPress event."
       }
     },
     toolbar: {
@@ -55,8 +61,6 @@ export default class App extends Component<{}> {
     },
     activeComponent: null,
     counter: 1,
-    htmlAmpas: `<View><Text>Apakah ampas?</Text><Text>Tes lagi dong?</Text><Switch value={true}/><Button onPress={'buttonPressed'} title="TESTING" /></View>`,
-    functionAmpas: `alert('1');this.setState({counter: 3,});alert('2');`,
     showPropsScreen: false,
     showRunScreen: false,
     showScreenTab: 'VIEW',
@@ -79,7 +83,11 @@ export default class App extends Component<{}> {
       case "Switch":
         return (
           <View style={{ flexDirection: "row" }}>
-            <Switch value={component.value.value} />
+            <Switch
+              value={
+                component.value.type == "state" ? false : component.value.value
+              }
+            />
             <Text
               style={{
                 fontSize: component.fontSize.value,
@@ -95,7 +103,7 @@ export default class App extends Component<{}> {
           <Button
             title={component.title.value}
             color={component.color.value}
-            onPress={() => alert("test")}
+            onPress={() => {}}
           />
         );
     }
@@ -136,6 +144,8 @@ export default class App extends Component<{}> {
         ...this.state.components,
         {
           type: "Button",
+          id: `button${this.state.counter}`,
+          onPress: `button${this.state.counter}_onPress`,
           title: {
             type: "value",
             value: "SUBMIT"
@@ -145,7 +155,19 @@ export default class App extends Component<{}> {
             value: "#2ecc71"
           }
         }
-      ]
+      ],
+      logics: {
+        ...this.state.logics,
+        ...{
+          [`button${this.state.counter}_onPress`]: {
+            name: `button${this.state.counter}_onPress`,
+            code: "",
+            xml: "",
+            description: `Button ${this.state.counter} onPress event.`
+          }
+        }
+      },
+      counter: this.state.counter + 1
     });
   }
   _addSwitch() {
@@ -209,6 +231,7 @@ export default class App extends Component<{}> {
     return (
       <View style={styles.overlay}>
         <RunScreen
+          state={this.state.state}
           logics={this.state.logics}
           components={this.state.components}
           onBack={() => this.setState({ showRunScreen: false })}
@@ -288,10 +311,9 @@ export default class App extends Component<{}> {
   }
 
   render() {
-    const { counter } = this.state;
-    const buttonPressed = () => {
-      this.evalInContext(this.state.functionAmpas, this);
-    };
+    // const buttonPressed = () => {
+    //   this.evalInContext(this.state.functionAmpas, this);
+    // };
     return (
       <View style={{ flex: 1 }}>
         {/* <Text>{counter}</Text>

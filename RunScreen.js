@@ -40,7 +40,22 @@ export default class RunScreen extends Component<{}> {
       case "Switch":
         return (
           <View style={{ flexDirection: "row" }}>
-            <Switch value={component.value.value} />
+            <Switch
+              value={
+                component.value.type == "state" ? (
+                  this.state[component.value.value]
+                ) : (
+                  component.value.value
+                )
+              }
+              onValueChange={value => {
+                this.evalInContext(
+                  this.props.logics[component.onValueChange].code,
+                  this,
+                  value
+                );
+              }}
+            />
             <Text
               style={{
                 fontSize: component.fontSize.value,
@@ -56,21 +71,36 @@ export default class RunScreen extends Component<{}> {
           <Button
             title={component.title.value}
             color={component.color.value}
-            onPress={() => alert("test")}
+            onPress={() => {
+              this.evalInContext(
+                this.props.logics[component.onPress].code,
+                this
+              );
+            }}
           />
         );
     }
   }
-  evalInContext(js, context) {
-    return function() {
+  evalInContext(js, context, value) {
+    return function(value) {
       return eval(js);
-    }.call(context);
+    }.call(context, value);
+  }
+  _formatState() {
+    let result = {};
+    this.props.state.forEach(item => {
+      result[item.name] = item.value;
+    });
+    return result;
   }
   componentDidMount() {
     const didMount = this.props.logics.componentDidMount;
     if (didMount) {
       this.evalInContext(didMount.code, this);
     }
+    this.setState(this._formatState(), () => {
+      console.log("DYNAMIC STATE", this.state);
+    });
   }
   render() {
     return (

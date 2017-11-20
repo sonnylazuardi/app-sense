@@ -12,9 +12,11 @@ const data = {
   components: [
     {
       type: "Switch",
+      onValueChange: "switch0_onValueChange",
+      id: "switch0",
       value: {
-        type: "value",
-        value: false
+        type: "state",
+        value: "isAmpas"
       },
       text: {
         type: "value",
@@ -45,17 +47,6 @@ const data = {
       }
     },
     {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
       type: "Text",
       text: {
         type: "value",
@@ -72,72 +63,8 @@ const data = {
     },
     {
       type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Button",
+      onPress: "button0_onPress",
+      id: "button0",
       title: {
         type: "value",
         value: "SUBMIT"
