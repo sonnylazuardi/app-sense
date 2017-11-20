@@ -63,7 +63,7 @@ export default class App extends Component<{}> {
     counter: 1,
     showPropsScreen: false,
     showRunScreen: false,
-    showScreenTab: 'VIEW',
+    showTabScreen: "VIEW"
   };
   _nextOrder = [];
   _componentToJSX(component) {
@@ -219,11 +219,20 @@ export default class App extends Component<{}> {
     });
   }
   _removeComponent(activeComponent) {
+    const currentComponent = this.state.components.filter(
+      (component, i) => i == activeComponent
+    )[0];
+    let logics = { ...this.state.logics };
+    if (logics.hasOwnProperty(currentComponent.onPress))
+      delete logics[currentComponent.onPress];
+    if (logics.hasOwnProperty(currentComponent.onValueChange))
+      delete logics[currentComponent.onValueChange];
     this.setState({
       activeComponent: null,
       components: this.state.components.filter(
         (component, i) => i != activeComponent
-      )
+      ),
+      logics: logics
     });
   }
   _renderRunScreen() {
@@ -296,17 +305,17 @@ export default class App extends Component<{}> {
   }
 
   onStateCreateHandler(stateName, stateInitialValue) {
-    console.log('debug', {
+    console.log("debug", {
       stateName,
-      stateInitialValue,
+      stateInitialValue
     });
     const storedStates = this.state.state;
     storedStates.push({
       name: stateName,
-      value: stateInitialValue,
+      value: stateInitialValue
     });
     this.setState({
-      state: storedStates,
+      state: storedStates
     });
   }
 
@@ -333,39 +342,45 @@ export default class App extends Component<{}> {
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'VIEW' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "VIEW"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'VIEW' })}
+            onPress={() => this.setState({ showTabScreen: "VIEW" })}
           >
             <Text style={styles.tabbarButtonText}>VIEW</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'LOGIC' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "LOGIC"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'LOGIC' })}
+            onPress={() => this.setState({ showTabScreen: "LOGIC" })}
           >
             <Text style={styles.tabbarButtonText}>LOGIC</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'STATE' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "STATE"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'STATE' })}
+            onPress={() => this.setState({ showTabScreen: "STATE" })}
           >
             <Text style={styles.tabbarButtonText}>STATE</Text>
           </TouchableOpacity>
         </View>
-        { (this.state.showTabScreen == 'STATE' ? (
+        {this.state.showTabScreen == "STATE" ? (
           <View style={{ flex: 1 }}>
             <StateScreen
               onCreateHandler={this.onStateCreateHandler.bind(this)}
               states={this.state.state}
             />
           </View>
-        ) : (this.state.showTabScreen == 'VIEW' ? (
+        ) : this.state.showTabScreen == "VIEW" ? (
           <View style={styles.container}>
             <View style={styles.toolbar}>
               <TouchableOpacity
@@ -499,7 +514,7 @@ export default class App extends Component<{}> {
               }}
             />
           </View>
-        )))}
+        )}
         {this._renderPropsScreen()}
         {this._renderRunScreen()}
 
