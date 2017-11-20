@@ -25,6 +25,7 @@
   <xml id="toolbox" style="display: none">
     <category name="Functions">
       <block type="set_state"></block>
+      <block type="get_state"></block>
       <block type="text"></block>
       <block type="text_alert"></block>
       <block type="text_value"></block>
@@ -144,6 +145,51 @@ Blockly.JavaScript["set_state"] = function(block) {
       Blockly.JavaScript.ORDER_ATOMIC
     ) || "''";
   return "this.setState({" + argKey + ": " + argValue + "});\n";
+};
+
+Blockly.Blocks['get_state'] = {
+  init: function() {
+    this.jsonInit({
+      "type": "get_state",
+      "message0": "state %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "VALUE",
+          "options": [
+            [
+              "option 1",
+              "option 1"
+            ],
+            [
+              "option 2",
+              "option 2"
+            ],
+            [
+              "option 3",
+              "option 3"
+            ]
+          ]
+        }
+      ],
+      "inputsInline": true,
+      "output": null,
+      "colour": 230,
+      "tooltip": "",
+      "helpUrl": ""
+    });
+  }
+};
+
+Blockly.JavaScript['get_state'] = function(block) {
+  // String or array length.
+  var argValue =
+  Blockly.JavaScript.valueToCode(
+    block,
+    "VALUE",
+    Blockly.JavaScript.ORDER_ATOMIC
+  ) || "''";
+  return "this.state." + argValue;
 };
 
 Blockly.Blocks["text_alert"] = {
