@@ -58,6 +58,11 @@ export default class RunScreen extends Component<{}> {
                   this,
                   value
                 );
+                if (component.value.type == "state") {
+                  const obj = {}
+                  obj[component.value.value] = value
+                  this.setState(obj)
+                }
               }}
             />
             <Text
