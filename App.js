@@ -57,13 +57,13 @@ export default class App extends Component<{}> {
     },
     toolbar: {
       title: "My Application",
-      color: "#2ecc71"
+      color: "#075e9b"
     },
     activeComponent: null,
     counter: 1,
     showPropsScreen: false,
     showRunScreen: false,
-    showScreenTab: 'VIEW',
+    showTabScreen: "VIEW"
   };
   _nextOrder = [];
   _componentToJSX(component) {
@@ -94,7 +94,14 @@ export default class App extends Component<{}> {
                 color: component.color.value
               }}
             >
-              {component.text.value}
+              {component.text.type == "state" ? (
+                // this.state.state[component.text.value]
+                this.state.state.filter(
+                  state => state.name == component.text.value
+                )[0].value
+              ) : (
+                component.text.value
+              )}
             </Text>
           </View>
         );
@@ -152,7 +159,7 @@ export default class App extends Component<{}> {
           },
           color: {
             type: "value",
-            value: "#2ecc71"
+            value: "#075e9b"
           }
         }
       ],
@@ -219,11 +226,20 @@ export default class App extends Component<{}> {
     });
   }
   _removeComponent(activeComponent) {
+    const currentComponent = this.state.components.filter(
+      (component, i) => i == activeComponent
+    )[0];
+    let logics = { ...this.state.logics };
+    if (logics.hasOwnProperty(currentComponent.onPress))
+      delete logics[currentComponent.onPress];
+    if (logics.hasOwnProperty(currentComponent.onValueChange))
+      delete logics[currentComponent.onValueChange];
     this.setState({
       activeComponent: null,
       components: this.state.components.filter(
         (component, i) => i != activeComponent
-      )
+      ),
+      logics: logics
     });
   }
   _renderRunScreen() {
@@ -260,10 +276,11 @@ export default class App extends Component<{}> {
     return (
       <View style={styles.overlay}>
         <PropsScreen
+          state={this.state.state}
           activeComponent={activeComponent}
           component={component}
           onBack={() => this.setState({ showPropsScreen: false })}
-          onSave={(activeComponent, key, value) => {
+          onSave={(activeComponent, key, value, type) => {
             if (activeComponent == -1) {
               this.setState({
                 toolbar: {
@@ -279,7 +296,7 @@ export default class App extends Component<{}> {
                       ...component,
                       ...{
                         [key]: {
-                          type: "value",
+                          type: type,
                           value: value
                         }
                       }
@@ -302,7 +319,7 @@ export default class App extends Component<{}> {
       value: value,
     });
     this.setState({
-      state: storedStates,
+      state: storedStates
     });
   }
 
@@ -343,32 +360,38 @@ export default class App extends Component<{}> {
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'VIEW' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "VIEW"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'VIEW' })}
+            onPress={() => this.setState({ showTabScreen: "VIEW" })}
           >
             <Text style={styles.tabbarButtonText}>VIEW</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'LOGIC' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "LOGIC"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'LOGIC' })}
+            onPress={() => this.setState({ showTabScreen: "LOGIC" })}
           >
             <Text style={styles.tabbarButtonText}>LOGIC</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.tabbarButton,
-              this.state.showTabScreen == 'STATE' ? styles.tabbarButtonActive : null
+              this.state.showTabScreen == "STATE"
+                ? styles.tabbarButtonActive
+                : null
             ]}
-            onPress={() => this.setState({ showTabScreen: 'STATE' })}
+            onPress={() => this.setState({ showTabScreen: "STATE" })}
           >
             <Text style={styles.tabbarButtonText}>STATE</Text>
           </TouchableOpacity>
         </View>
-        { (this.state.showTabScreen == 'STATE' ? (
+        {this.state.showTabScreen == "STATE" ? (
           <View style={{ flex: 1 }}>
             <StateScreen
               onCreateHandler={this.onStateCreateHandler.bind(this)}
@@ -376,7 +399,7 @@ export default class App extends Component<{}> {
               states={this.state.state}
             />
           </View>
-        ) : (this.state.showTabScreen == 'VIEW' ? (
+        ) : this.state.showTabScreen == "VIEW" ? (
           <View style={styles.container}>
             <View style={styles.toolbar}>
               <TouchableOpacity
@@ -477,7 +500,7 @@ export default class App extends Component<{}> {
                 <View style={{ width: 10 }} />
                 <Button
                   title="PROPS"
-                  color="#2ecc71"
+                  color="#075e9b"
                   onPress={() => this.setState({ showPropsScreen: true })}
                 />
                 <View style={{ width: 10 }} />
@@ -492,6 +515,7 @@ export default class App extends Component<{}> {
         ) : (
           <View style={{ flex: 1 }}>
             <LogicScreen
+              states={this.state.state}
               logics={this.state.logics}
               onSaveLogic={(logicKey, code, xml) => {
                 this.setState({
@@ -510,7 +534,7 @@ export default class App extends Component<{}> {
               }}
             />
           </View>
-        )))}
+        )}
         {this._renderPropsScreen()}
         {this._renderRunScreen()}
 
@@ -589,7 +613,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     justifyContent: "center",
     paddingHorizontal: 15,
     elevation: 3
@@ -600,7 +624,7 @@ const styles = StyleSheet.create({
   },
   buttonFab: {
     elevation: 5,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     borderRadius: 25,
     height: 50,
     width: 50,
@@ -616,12 +640,12 @@ const styles = StyleSheet.create({
     tintColor: "#fff"
   },
   tabbar: {
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     elevation: 3
   },
   tabbarButton: {
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flex: 1,
     height: 50,
     alignItems: "center",

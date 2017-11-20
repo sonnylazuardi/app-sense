@@ -28,7 +28,8 @@ import uuid from "uuid";
 export default class BlocklyScreen extends Component<{}> {
   state = {
     code: null,
-    xml: this.props.xml
+    xml: this.props.xml,
+    states: this.props.states,
   };
   componentDidMount() {
     console.log("XML", this.props.xml);
@@ -51,6 +52,31 @@ export default class BlocklyScreen extends Component<{}> {
     console.log("XML", this.state.xml);
     this.props.onSave(this.props.logicKey, this.state.code, this.state.xml);
   }
+  _generateStateBlocks() {
+    console.log("STATE:", this.state)
+    var options = this.state.states.map(s => [s.name, "OPTIONNAME"])
+    return {
+      type: "set_state",
+      message0: "setState %1 value %2",
+      args0: [
+        {
+          type: "field_dropdown",
+          name: "NAME",
+          options: options,
+        },
+        {
+          type: "input_value",
+          name: "NAME"
+        }
+      ],
+      inputsInline: true,
+      previousStatement: null,
+      nextStatement: null,
+      colour: 230,
+      tooltip: "Set the given state to certain value.",
+      helpUrl: "https://reactjs.org/docs/react-component.html#setstate"
+    };
+  }
   render() {
     let source = {
       uri: `file:///android_asset/blockly/index.html#/?${uuid.v4()}`
@@ -67,9 +93,16 @@ export default class BlocklyScreen extends Component<{}> {
         this.setDeletable(false);
       }
     };`;
+    const blocklyStates = `
+      Blockly.Blocks["set_state"] = {
+        init: function() {
+          this.jsonInit(${JSON.stringify(this._generateStateBlocks())})
+        }
+      };`
     const injectedJavaScript = this.state.xml.length
       ? `
     ${blocklyStart}
+    ${blocklyStates}
     window.onload = function() {
       var xml_text = '${this.state.xml.replace(/\'/g, `\'`)}';
       var xml = Blockly.Xml.textToDom(xml_text);
@@ -77,14 +110,16 @@ export default class BlocklyScreen extends Component<{}> {
       Blockly.Xml.domToWorkspace(xml, demoWorkspace);
     }
 `
-      : `
+: `
     ${blocklyStart}
+    ${blocklyStates}
     window.onload = function() {
       demoWorkspace.clear();
       var startBlock = Blockly.Block.obtain(demoWorkspace, 'start');
       startBlock.initSvg();
       startBlock.render();
     }`;
+    console.log('states:', blocklyStates)
     return (
       <View style={styles.container}>
         <View style={styles.toolbar}>
@@ -126,7 +161,7 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     height: 56,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     alignItems: "center",
     elevation: 3
