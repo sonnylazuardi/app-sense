@@ -143,7 +143,7 @@ export default class StateScreen extends Component<{}> {
               <Text style={{ color: "#000", fontWeight: "500" }}>
                 {rowData.name}
               </Text>
-              <Text style={{ color: "#999" }}>{rowData.value}</Text>
+              <Text style={{ color: "#999" }}>{rowData.value.toString()}</Text>
             </TouchableOpacity>
           )}
         />
