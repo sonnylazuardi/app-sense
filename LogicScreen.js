@@ -24,7 +24,12 @@ import {
 import BlocklyScreen from "./BlocklyScreen";
 
 export default class LogicScreen extends Component<{}> {
-  state = { showBlocklyScreen: false, xml: "", logicKey: "" };
+  state = {
+    showBlocklyScreen: false,
+    xml: "",
+    logicKey: "",
+    states: this.props.states
+  };
   _renderBlocklyScreen() {
     if (!this.state.showBlocklyScreen) return null;
     return (
@@ -39,6 +44,7 @@ export default class LogicScreen extends Component<{}> {
             });
             this.props.onSaveLogic(logicKey, code, xml);
           }}
+          states={this.state.states}
         />
       </View>
     );
