@@ -27,6 +27,7 @@
       <block type="set_state"></block>
       <block type="text"></block>
       <block type="text_alert"></block>
+      <block type="text_value"></block>
       <block type="math_number"></block>
       <block type="math_arithmetic"></block>
       <block type="string_length"></block>
@@ -167,6 +168,25 @@ Blockly.JavaScript["text_alert"] = function(block) {
       Blockly.JavaScript.ORDER_ATOMIC
     ) || "''";
   return "alert(" + argMessage + ");\n";
+};
+
+Blockly.Blocks["text_value"] = {
+  init: function() {
+    this.jsonInit({
+      type: "variable",
+      message0: "value",
+      inputsInline: true,
+      output: null,
+      colour: 230,
+      tooltip: "",
+      helpUrl: ""
+    });
+  }
+};
+
+Blockly.JavaScript["text_value"] = function(block) {
+  // String or array length.
+  return ["value", Blockly.JavaScript.ORDER_NONE];
 };
 
 var demoWorkspace = Blockly.inject("blocklyDiv", {
