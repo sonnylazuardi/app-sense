@@ -126,7 +126,7 @@ export default class PropsScreen extends Component<{}> {
                 <View style={{ width: 10 }} />
                 <Button
                   title="SAVE"
-                  color="#2ecc71"
+                  color="#075e9b"
                   onPress={() => this._save()}
                 />
               </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     height: 56,
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#075e9b",
     flexDirection: "row",
     alignItems: "center",
     paddingRight: 15,
