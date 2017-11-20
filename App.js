@@ -295,16 +295,26 @@ export default class App extends Component<{}> {
     );
   }
 
-  onStateCreateHandler(stateName, stateInitialValue) {
-    console.log('debug', {
-      stateName,
-      stateInitialValue,
-    });
+  onStateCreateHandler(name, value) {
     const storedStates = this.state.state;
     storedStates.push({
-      name: stateName,
-      value: stateInitialValue,
+      name: name,
+      value: value,
     });
+    this.setState({
+      state: storedStates,
+    });
+  }
+
+  onStateDeleteHandler(name) {
+    const storedStates = this.state.state;
+    for (var i = 0; i < storedStates.length; i++) {
+      if (storedStates[i].name === name) {
+          storedStates.splice(i, 1);
+          break;
+      }
+    }
+
     this.setState({
       state: storedStates,
     });
@@ -362,6 +372,7 @@ export default class App extends Component<{}> {
           <View style={{ flex: 1 }}>
             <StateScreen
               onCreateHandler={this.onStateCreateHandler.bind(this)}
+              onDeleteHandler={this.onStateDeleteHandler.bind(this)}
               states={this.state.state}
             />
           </View>

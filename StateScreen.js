@@ -18,41 +18,111 @@ import {
   Easing,
   ScrollView,
   Dimensions,
-  TextInput
+  TextInput,
+  ListView,
 } from "react-native";
 
 export default class StateScreen extends Component<{}> {
-    state = { 
-        stateName: '',
-        stateInitialValue: '',
-    };
+    constructor(props) {
+        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2});
+        super(props);
+        this.state = {
+            ds: ds,
+            isChosen: false,
+            name: '',
+            value: '',
+            dataSource: ds.cloneWithRows(this.props.states),
+        };
+    }     
+    
+    onItemPress(name, value) {
+        if (this.state.isChosen) {
+            if (name == this.state.name) {
+                this.setState({
+                    isChosen: false,
+                    name: "",
+                    value: "",
+                });
+            } else {
+                this.setState({
+                    name: name,
+                    value: value,
+                });
+            }
+        } else {
+            this.setState({
+                isChosen: true,
+                name: name,
+                value: value,
+            });
+        }
+    }
+
+    handleCreate(name, value) {
+        this.props.onCreateHandler(name, value);
+        this.setState({
+            isUpdate: false,
+            name: "",
+            value: "",
+            dataSource: this.state.ds.cloneWithRows(this.props.states),
+        });
+    }
+
+    handleDelete(name) {
+        this.props.onDeleteHandler(name);
+        this.setState({
+            isChosen: false,
+            name: "",
+            value: "",
+            dataSource: this.state.ds.cloneWithRows(this.props.states),
+        });
+    }
 
   render() {
     return (
       <View style={styles.container}>
         <TextInput
             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(stateName) => this.setState({stateName})}
+            onChangeText={(name) => this.setState({name})}
             placeholder={'State Name'}
-            value={this.state.stateName}
+            value={this.state.name}
+            editable={!this.state.isChosen}
         />
         <TextInput
             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(stateInitialValue) => this.setState({stateInitialValue})}
-            placeholder={'State Initial Value'}
-            value={this.state.stateInitialValue}
+            onChangeText={(value) => this.setState({value})}
+            placeholder={'State Value'}
+            value={this.state.value}
+            editable={!this.state.isChosen}
         />
-        <Button
+        { this.state.isChosen ? 
+            <Button
+                onPress={() => {
+                    const {name} = this.state;
+                    this.handleDelete(name);
+                }}
+                title="Delete State"
+                color="red"
+                accessibilityLabel="Learn more about this purple button"
+            />
+        : <Button
             onPress={() => {
-                this.props.onCreateHandler(this.state.stateName, this.state.stateInitialValue)}
-            }
-            title="Create State"
-            color="#841584"
+                const {name, value} = this.state;
+                this.handleCreate(name, value)
+            }}
+            title={"Create State"}
+            color="blue"
             accessibilityLabel="Learn more about this purple button"
+        /> }
+        <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => 
+                <Text
+                    style={{ marginLeft: "10%", marginTop: "10%" }}
+                    onPress={() => this.onItemPress(rowData.name, rowData.value)}
+                >{rowData.name + ": " + rowData.value }</Text>
+            }
         />
-        <Text>
-            {JSON.stringify(this.props.states)}
-        </Text>
       </View>
     );
   }
