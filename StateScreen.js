@@ -76,7 +76,7 @@ export default class StateScreen extends Component<{}> {
     if (this.isNumeric(value)) value = Number(value);
     this.props.onCreateHandler(name, value);
     this.setState({
-      isUpdate: false,
+      isChosen: false,
       name: "",
       value: "",
       dataSource: this.state.ds.cloneWithRows(this.props.states)
