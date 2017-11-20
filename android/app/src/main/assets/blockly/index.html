@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
+  <title>BLOCKLY</title>
+  <script src="./blockly_compressed.js"></script>
+  <script src="./javascript_compressed.js"></script>
+  <script src="./blocks_compressed.js"></script>
+  <script src="./msg/js/en.js"></script>
+  <style>
+    html, * {
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Functions">
+      <block type="set_state"></block>
+      <block type="text"></block>
+      <block type="text_alert"></block>
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="string_length"></block>
+    </category>
+    <category name="Variables" custom="VARIABLE"></category>
+    <category name="Logic">
+      <block type="controls_if"></block>
+        <block type="controls_if">
+          <mutation else="1"></mutation>
+        </block>
+        <block type="controls_if">
+          <mutation elseif="1" else="1"></mutation>
+        </block>
+      <block type="logic_compare"></block>
+    </category>
+    <category name="Loops">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+      </category>
+
+    <!-- <block type="json"></block> -->
+  </xml>
+
+  <textarea id="textarea" style="display: none"></textarea>
+
+  <script>
+  var i = 0;
+Blockly.Blocks["start"] = {
+  init: function() {
+    this.setColour(250);
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_CENTRE)
+      .appendField("componentDidMount");
+
+    this.appendStatementInput("didMount");
+
+    this.setDeletable(false);
+  }
+};
+
+Blockly.JavaScript["start"] = function(block) {
+  var statements = Blockly.JavaScript.statementToCode(block, "didMount");
+  // TODO: Assemble JavaScript into code variable.
+  var code = statements;
+  return code;
+};
+
+Blockly.Blocks["string_length"] = {
+  init: function() {
+    this.appendValueInput("VALUE")
+      .setCheck("String")
+      .appendField("length of");
+    this.setOutput(true, "Number");
+    this.setColour(160);
+    this.setTooltip("Returns number of letters in the provided text.");
+    this.setHelpUrl("http://www.w3schools.com/jsref/jsref_length_string.asp");
+  }
+};
+
+Blockly.JavaScript["string_length"] = function(block) {
+  // String or array length.
+  var argument0 =
+    Blockly.JavaScript.valueToCode(
+      block,
+      "VALUE",
+      Blockly.JavaScript.ORDER_FUNCTION_CALL
+    ) || "''";
+  return [argument0 + ".length", Blockly.JavaScript.ORDER_MEMBER];
+};
+
+Blockly.Blocks["set_state"] = {
+  init: function() {
+    this.appendValueInput("KEY").appendField("setState");
+    this.appendValueInput("VALUE").appendField("value");
+    this.setColour(160);
+    this.setTooltip("Set the given state to certain value.");
+    this.setHelpUrl("https://reactjs.org/docs/react-component.html#setstate");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setDeletable(true);
+  }
+};
+
+// Blockly.Blocks['json'] = {
+//   init: function() {
+//     this.setColour(160);
+//     this.setTooltip('Return json structure');
+//     this.setHelpUrl('https://reactjs.org/docs/react-component.html#setstate');
+//     this.appendStatementInput("jsonState")
+//         .appendField("json");
+//     this.setOutput(true, null);
+//     this.setDeletable(true);
+//   }
+// };
+
+Blockly.JavaScript["set_state"] = function(block) {
+  // String or array length.
+  var argKey =
+    Blockly.JavaScript.valueToCode(
+      block,
+      "KEY",
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || "''";
+  var argValue =
+    Blockly.JavaScript.valueToCode(
+      block,
+      "VALUE",
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || "''";
+  return "this.setState({" + argKey + ": " + argValue + "});\n";
+};
+
+Blockly.Blocks["text_alert"] = {
+  init: function() {
+    this.appendValueInput("message").appendField("alert");
+    this.setColour(160);
+    this.setTooltip("Alert a certain message.");
+    this.setHelpUrl("https://reactjs.org/docs/react-component.html#setstate");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setDeletable(true);
+  }
+};
+
+Blockly.JavaScript["text_alert"] = function(block) {
+  // String or array length.
+  var argMessage =
+    Blockly.JavaScript.valueToCode(
+      block,
+      "message",
+      Blockly.JavaScript.ORDER_ATOMIC
+    ) || "''";
+  return "alert(" + argMessage + ");\n";
+};
+
+var demoWorkspace = Blockly.inject("blocklyDiv", {
+  media: "./media/",
+  toolbox: document.getElementById("toolbox")
+});
+
+var startBlock = Blockly.Block.obtain(demoWorkspace, "start");
+startBlock.initSvg();
+startBlock.render();
+
+function myUpdateFunction(event) {
+  var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+  document.getElementById("textarea").value = code;
+  var xml = Blockly.Xml.workspaceToDom(demoWorkspace);
+  var xml_text = Blockly.Xml.domToText(xml);
+
+  document.title = code + "<|>" + xml_text;
+  window.location.hash = ++i;
+}
+demoWorkspace.addChangeListener(myUpdateFunction);
+
+// Blockly.JavaScript['text_length'] = function(block) {
+//    // String or array length.
+//    var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+//        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+//    return [argument0 + '.length', Blockly.JavaScript.ORDER_MEMBER];
+//  };
+</script>
+
+</body>
+</html>

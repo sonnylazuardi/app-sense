@@ -15,94 +15,50 @@ import {
   TouchableOpacity,
   Animated,
   Image,
-  Easing
+  Easing,
+  ScrollView,
+  Dimensions
 } from "react-native";
 import JsxParser from "./lib/jsxParser/components/JsxParser";
 import SortableList from "react-native-sortable-list";
 import Row from "./src/components/row";
+import PropsScreen from "./PropsScreen";
+import RunScreen from "./RunScreen";
+import LogicScreen from "./LogicScreen";
+import BlocklyScreen from "./BlocklyScreen";
+import data from "./data";
 
-const data = {
-  state: [
-    {
-      name: "isAmpas",
-      value: false
-    },
-    {
-      name: "ampasText",
-      value: "Teks ini tidak ampas"
-    }
-  ],
-  components: [
-    {
-      type: "Switch",
-      value: {
-        type: "value",
-        value: false
-      },
-      text: {
-        type: "value",
-        value: "Ubah jadi ampas"
-      },
-      color: {
-        type: "value",
-        value: "#333"
-      },
-      fontSize: {
-        type: "value",
-        value: 15
-      }
-    },
-    {
-      type: "Text",
-      text: {
-        type: "value",
-        value: "Teks lagi nih"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      },
-      fontSize: {
-        type: "value",
-        value: 16
-      }
-    },
-    {
-      type: "Button",
-      title: {
-        type: "value",
-        value: "SUBMIT"
-      },
-      color: {
-        type: "value",
-        value: "#2ecc71"
-      }
-    },
-    {
-      type: "Text",
-      text: {
-        type: "value",
-        value: "Teks ini tidak ampas"
-      },
-      color: {
-        type: "value",
-        value: "#333"
-      },
-      fontSize: {
-        type: "value",
-        value: 15
-      }
-    }
-  ]
-};
+const window = Dimensions.get("window");
 
 export default class App extends Component<{}> {
   state = {
     state: data.state,
     components: data.components,
+    logics: {
+      componentDidMount: {
+        name: "componentDidMount",
+        code: "",
+        xml: "",
+        description: "invoked immediately after a component is mounted."
+      },
+      button1_onPress: {
+        name: "button1_onPress",
+        code: "",
+        xml: "",
+        description: "Button 1 onPress event."
+      }
+    },
+    toolbar: {
+      title: "My Application",
+      color: "#2ecc71"
+    },
+    activeComponent: null,
     counter: 1,
     htmlAmpas: `<View><Text>Apakah ampas?</Text><Text>Tes lagi dong?</Text><Switch value={true}/><Button onPress={'buttonPressed'} title="TESTING" /></View>`,
-    functionAmpas: `alert('1');this.setState({counter: 3,});alert('2');`
+    functionAmpas: `alert('1');this.setState({counter: 3,});alert('2');`,
+    showPropsScreen: false,
+    showRunScreen: false,
+    showLogicScreen: false
   };
   _nextOrder = [];
   _componentToJSX(component) {
@@ -148,6 +104,7 @@ export default class App extends Component<{}> {
     components.forEach((component, i) => {
       result[i] = {
         ...component,
+        isActive: i == this.state.activeComponent,
         component: this._componentToJSX(component)
       };
     });
@@ -238,13 +195,89 @@ export default class App extends Component<{}> {
       ]
     });
   }
+  _removeComponent(activeComponent) {
+    this.setState({
+      activeComponent: null,
+      components: this.state.components.filter(
+        (component, i) => i != activeComponent
+      )
+    });
+  }
+  _renderRunScreen() {
+    if (!this.state.showRunScreen) return null;
+    return (
+      <View style={styles.overlay}>
+        <RunScreen
+          logics={this.state.logics}
+          components={this.state.components}
+          onBack={() => this.setState({ showRunScreen: false })}
+          toolbar={this.state.toolbar}
+        />
+      </View>
+    );
+  }
+  _renderPropsScreen() {
+    if (!this.state.showPropsScreen) return null;
+    const activeComponent = this.state.activeComponent;
+    let component = this.state.components[activeComponent];
+    if (activeComponent == -1) {
+      component = {
+        type: "Toolbar",
+        title: {
+          type: "value",
+          value: this.state.toolbar.title
+        },
+        color: {
+          type: "value",
+          value: this.state.toolbar.color
+        }
+      };
+    }
+    return (
+      <View style={styles.overlay}>
+        <PropsScreen
+          activeComponent={activeComponent}
+          component={component}
+          onBack={() => this.setState({ showPropsScreen: false })}
+          onSave={(activeComponent, key, value) => {
+            if (activeComponent == -1) {
+              this.setState({
+                toolbar: {
+                  ...this.state.toolbar,
+                  ...{ [key]: value }
+                }
+              });
+            } else {
+              this.setState({
+                components: this.state.components.map((component, i) => {
+                  if (i == activeComponent) {
+                    return {
+                      ...component,
+                      ...{
+                        [key]: {
+                          type: "value",
+                          value: value
+                        }
+                      }
+                    };
+                  }
+                  return component;
+                })
+              });
+            }
+          }}
+        />
+      </View>
+    );
+  }
+
   render() {
     const { counter } = this.state;
     const buttonPressed = () => {
       this.evalInContext(this.state.functionAmpas, this);
     };
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         {/* <Text>{counter}</Text>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
@@ -258,49 +291,181 @@ export default class App extends Component<{}> {
           components={{ Text, Switch, View, Button }}
           jsx={this.state.htmlAmpas}
         /> */}
-        <View style={styles.toolbar}>
+        <View style={styles.tabbar}>
           <TouchableOpacity
-            style={styles.toolButton}
-            onPress={() => this._addText()}
+            style={[
+              styles.tabbarButton,
+              !this.state.showLogicScreen ? styles.tabbarButtonActive : null
+            ]}
+            onPress={() => this.setState({ showLogicScreen: false })}
           >
-            <Text style={styles.toolButtonText}>Text</Text>
+            <Text style={styles.tabbarButtonText}>VIEW</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.toolButton}
-            onPress={() => this._addButton()}
+            style={[
+              styles.tabbarButton,
+              this.state.showLogicScreen ? styles.tabbarButtonActive : null
+            ]}
+            onPress={() => this.setState({ showLogicScreen: true })}
           >
-            <Text style={styles.toolButtonText}>Button</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.toolButton}
-            onPress={() => this._addSwitch()}
-          >
-            <Text style={styles.toolButtonText}>Switch</Text>
+            <Text style={styles.tabbarButtonText}>LOGIC</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.canvas}>
-          <SortableList
-            style={styles.list}
-            onChangeOrder={nextOrder => {
-              this._nextOrder = nextOrder;
-            }}
-            onReleaseRow={key => {
-              setTimeout(() => {
+        {!this.state.showLogicScreen ? (
+          <View style={styles.container}>
+            <View style={styles.toolbar}>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={() => this._addText()}
+              >
+                <Text style={styles.toolButtonText}>Text</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={() => this._addButton()}
+              >
+                <Text style={styles.toolButtonText}>Button</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.toolButton}
+                onPress={() => this._addSwitch()}
+              >
+                <Text style={styles.toolButtonText}>Switch</Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={styles.canvas}
+              // onLongPress={() => {
+              //   console.log("BG LONG PRESS");
+              // }}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.header,
+                  { backgroundColor: this.state.toolbar.color }
+                ]}
+                onPress={() => this.setState({ activeComponent: -1 })}
+              >
+                <Text style={styles.headerText}>
+                  {this.state.toolbar.title}
+                </Text>
+              </TouchableOpacity>
+              <SortableList
+                style={styles.list}
+                scrollEnabled={true}
+                rowActivationTime={200}
+                onChangeOrder={nextOrder => {
+                  this._nextOrder = nextOrder;
+                }}
+                manuallyActivateRows={true}
+                onReleaseRow={key => {
+                  // this.setState({
+                  //   activeComponent: null
+                  // });
+                  // console.log("NEXT ORDER", this._nextOrder);
+                  if (this._nextOrder.length > 0) {
+                    this.setState({
+                      activeComponent: null,
+                      components: this._reorderComponents(
+                        this.state.components,
+                        this._nextOrder
+                      )
+                    });
+                  }
+                }}
+                onPressRow={key => {
+                  // if (this._nextOrder.length > 0) {
+                  this.setState({
+                    activeComponent: key
+                    // components: this._reorderComponents(
+                    //   this.state.components,
+                    //   this._nextOrder
+                    // )
+                  });
+                  // }
+                }}
+                onActivateRow={key => {
+                  console.log("ACTIVE ROW", key);
+                }}
+                contentContainerStyle={styles.contentContainer}
+                data={this._formatComponents(this.state.components)}
+                renderRow={this._renderRow}
+              />
+            </View>
+            {this.state.activeComponent ? (
+              <View style={styles.panelProps}>
+                <Text style={styles.panelPropsText}>
+                  {this.state.activeComponent != -1 ? (
+                    this.state.components[this.state.activeComponent].type
+                  ) : (
+                    "Toolbar"
+                  )}
+                </Text>
+                {this.state.activeComponent != -1 ? (
+                  <Button
+                    title="REMOVE"
+                    color="#999"
+                    onPress={() =>
+                      this._removeComponent(this.state.activeComponent)}
+                  />
+                ) : null}
+                <View style={{ width: 10 }} />
+                <Button
+                  title="PROPS"
+                  color="#2ecc71"
+                  onPress={() => this.setState({ showPropsScreen: true })}
+                />
+                <View style={{ width: 10 }} />
+                <Button
+                  title="X"
+                  color="#999"
+                  onPress={() => this.setState({ activeComponent: null })}
+                />
+              </View>
+            ) : null}
+          </View>
+        ) : (
+          <View style={{ flex: 1 }}>
+            <LogicScreen
+              logics={this.state.logics}
+              onSaveLogic={(logicKey, code, xml) => {
                 this.setState({
-                  components: this._reorderComponents(
-                    this.state.components,
-                    this._nextOrder
-                  )
+                  logics: {
+                    ...this.state.logics,
+                    ...{
+                      [logicKey]: {
+                        ...this.state.logics[logicKey],
+                        name: logicKey,
+                        code: code,
+                        xml: xml
+                      }
+                    }
+                  }
                 });
-              });
-            }}
-            onPressRow={key => {}}
-            onActivateRow={key => {}}
-            contentContainerStyle={styles.contentContainer}
-            data={this._formatComponents(this.state.components)}
-            renderRow={this._renderRow}
-          />
-        </View>
+              }}
+            />
+          </View>
+        )}
+        {this._renderPropsScreen()}
+        {this._renderRunScreen()}
+
+        <TouchableOpacity
+          style={styles.buttonFab}
+          onPress={() =>
+            this.setState({ showRunScreen: !this.state.showRunScreen })}
+        >
+          {this.state.showRunScreen ? (
+            <Image
+              source={require("AppSense/assets/stop.png")}
+              style={styles.buttonFabIcon}
+            />
+          ) : (
+            <Image
+              source={require("AppSense/assets/play.png")}
+              style={styles.buttonFabIcon}
+            />
+          )}
+        </TouchableOpacity>
       </View>
     );
   }
@@ -313,21 +478,96 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   toolbar: {
-    flex: 1
+    width: 100
   },
   list: {
     flex: 1
   },
   contentContainer: {
-    flex: 1
+    width: window.width - 100,
+    paddingBottom: 80
   },
   canvas: {
-    flex: 2,
+    flex: 1,
     backgroundColor: "#eee"
   },
   toolButton: {
     height: 60,
     alignItems: "center",
     justifyContent: "center"
+  },
+  panelProps: {
+    zIndex: 1,
+    backgroundColor: "#fff",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    elevation: 4
+  },
+  panelPropsText: {
+    flex: 1
+  },
+  overlay: {
+    zIndex: 10,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    elevation: 5,
+    backgroundColor: "#fff"
+  },
+  header: {
+    height: 50,
+    backgroundColor: "#2ecc71",
+    justifyContent: "center",
+    paddingHorizontal: 15,
+    elevation: 3
+  },
+  headerText: {
+    color: "#fff",
+    fontWeight: "500"
+  },
+  buttonFab: {
+    elevation: 5,
+    backgroundColor: "#2ecc71",
+    borderRadius: 25,
+    height: 50,
+    width: 50,
+    position: "absolute",
+    bottom: 54,
+    right: 20,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  buttonFabIcon: {
+    width: 23,
+    height: 23,
+    tintColor: "#fff"
+  },
+  tabbar: {
+    backgroundColor: "#2ecc71",
+    flexDirection: "row",
+    elevation: 3
+  },
+  tabbarButton: {
+    backgroundColor: "#2ecc71",
+    flex: 1,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  tabbarButtonActive: {
+    borderBottomWidth: 3,
+    borderColor: "#fff"
+  },
+  tabbarButtonText: {
+    color: "#fff",
+    fontWeight: "500"
   }
 });

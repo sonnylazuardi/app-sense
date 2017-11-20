@@ -73,7 +73,9 @@ export default class Row extends Component {
     const { data, active } = this.props;
 
     return (
-      <Animated.View style={[styles.row, this._style]}>
+      <Animated.View
+        style={[styles.row, this._style, data.isActive ? styles.active : null]}
+      >
         {data.component}
       </Animated.View>
     );
@@ -105,5 +107,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
       }
     })
+  },
+  active: {
+    backgroundColor: "#999"
   }
 });
