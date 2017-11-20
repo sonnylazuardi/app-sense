@@ -44,15 +44,10 @@ export default class App extends Component<{}> {
       },
       button0_onPress: {
         name: "button0_onPress",
-        code: "",
-        xml: "",
+        code: "this.setState({counter: ((this.state.counter) + 1)});",
+        xml:
+          '<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="start" id=";`rAwHMo8LMphV$j]%OV" deletable="false" x="0" y="0"><statement name="statement"><block type="set_state" id="5x)I!yqJ4!4,?-,kF?Nd"><field name="KEY">counter</field><value name="VALUE"><block type="math_arithmetic" id="fMK?*4B#=c~UZ(e_qS}p"><field name="OP">ADD</field><value name="A"><block type="get_state" id="^8vpzQO3hO%Nei8rDP5!"><field name="VALUE">counter</field></block></value><value name="B"><block type="math_number" id="%leaD0-Lc=rt,;C###`T"><field name="NUM">1</field></block></value></block></value></block></statement></block></xml>',
         description: "Button 0 onPress event."
-      },
-      switch0_onValueChange: {
-        name: "switch0_onValueChange",
-        code: "alert(value); this.setState({isAmpas: value});",
-        xml: "",
-        description: "Switch 0 onPress event."
       }
     },
     toolbar: {
@@ -76,7 +71,13 @@ export default class App extends Component<{}> {
               color: component.color.value
             }}
           >
-            {component.text.value}
+            {component.text.type == "state" ? (
+              this.state.state.filter(
+                state => state.name == component.text.value
+              )[0].value
+            ) : (
+              component.text.value
+            )}
           </Text>
         );
         break;
@@ -155,7 +156,7 @@ export default class App extends Component<{}> {
           onPress: `button${this.state.counter}_onPress`,
           title: {
             type: "value",
-            value: "SUBMIT"
+            value: "Button " + this.state.counter
           },
           color: {
             type: "value",
@@ -189,7 +190,7 @@ export default class App extends Component<{}> {
           },
           text: {
             type: "value",
-            value: "Switch"
+            value: "Switch " + this.state.counter
           },
           color: {
             type: "value",
@@ -211,7 +212,7 @@ export default class App extends Component<{}> {
           type: "Text",
           text: {
             type: "value",
-            value: "Teks baru"
+            value: "New Text " + this.state.counter
           },
           color: {
             type: "value",
@@ -316,7 +317,7 @@ export default class App extends Component<{}> {
     const storedStates = this.state.state;
     storedStates.push({
       name: name,
-      value: value,
+      value: value
     });
     this.setState({
       state: storedStates
@@ -327,13 +328,13 @@ export default class App extends Component<{}> {
     const storedStates = this.state.state;
     for (var i = 0; i < storedStates.length; i++) {
       if (storedStates[i].name === name) {
-          storedStates.splice(i, 1);
-          break;
+        storedStates.splice(i, 1);
+        break;
       }
     }
 
     this.setState({
-      state: storedStates,
+      state: storedStates
     });
   }
 

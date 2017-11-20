@@ -1,45 +1,20 @@
 const data = {
   state: [
     {
-      name: "isAmpas",
-      value: false
-    },
-    {
-      name: "ampasText",
-      value: "Teks ini tidak ampas"
+      name: "counter",
+      value: 0
     }
   ],
   components: [
     {
-      type: "Switch",
-      onValueChange: "switch0_onValueChange",
-      id: "switch0",
-      value: {
-        type: "state",
-        value: "isAmpas"
-      },
-      text: {
-        type: "value",
-        value: "Ubah jadi ampas"
-      },
-      color: {
-        type: "value",
-        value: "#333"
-      },
-      fontSize: {
-        type: "value",
-        value: 15
-      }
-    },
-    {
       type: "Text",
       text: {
         type: "value",
-        value: "Teks lagi nih"
+        value: "Click the button below to add counter value."
       },
       color: {
         type: "value",
-        value: "#075e9b"
+        value: "#000"
       },
       fontSize: {
         type: "value",
@@ -49,16 +24,16 @@ const data = {
     {
       type: "Text",
       text: {
-        type: "value",
-        value: "Teks ini tidak ampas"
+        type: "state",
+        value: "counter"
       },
       color: {
         type: "value",
-        value: "#333"
+        value: "#075e9b"
       },
       fontSize: {
         type: "value",
-        value: 15
+        value: 30
       }
     },
     {
@@ -67,7 +42,7 @@ const data = {
       id: "button0",
       title: {
         type: "value",
-        value: "SUBMIT"
+        value: "Add counter"
       },
       color: {
         type: "value",

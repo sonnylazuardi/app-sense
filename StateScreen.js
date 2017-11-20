@@ -48,6 +48,7 @@ export default class StateScreen extends Component<{}> {
       } else {
         if (value === true) value = "true";
         if (value === false) value = "false";
+        if (this.isNumeric(value)) value = Number(value);
         this.setState({
           name: name,
           value: value
@@ -56,6 +57,7 @@ export default class StateScreen extends Component<{}> {
     } else {
       if (value === true) value = "true";
       if (value === false) value = "false";
+      if (this.isNumeric(value)) value = Number(value);
       this.setState({
         isChosen: true,
         name: name,
@@ -64,9 +66,14 @@ export default class StateScreen extends Component<{}> {
     }
   }
 
+  isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
   handleCreate(name, value) {
     if (value === "true") value = true;
     if (value === "false") value = false;
+    if (this.isNumeric(value)) value = Number(value);
     this.props.onCreateHandler(name, value);
     this.setState({
       isUpdate: false,
@@ -136,7 +143,7 @@ export default class StateScreen extends Component<{}> {
               <Text style={{ color: "#000", fontWeight: "500" }}>
                 {rowData.name}
               </Text>
-              <Text style={{ color: "#999" }}>{rowData.name}</Text>
+              <Text style={{ color: "#999" }}>{rowData.value}</Text>
             </TouchableOpacity>
           )}
         />
