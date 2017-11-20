@@ -13,7 +13,8 @@ import {
   Image,
   TouchableHighlight,
   ScrollView,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from "react-native";
 import MainApp from "./MainApp";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
