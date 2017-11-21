@@ -98,7 +98,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.appsense"
+        applicationId "com.sonnylab.appsense"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
