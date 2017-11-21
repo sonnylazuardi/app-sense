@@ -12,6 +12,8 @@ Download the application
 [![download](https://lh3.googleusercontent.com/v8DXc8EpIgPZCFJSJcE8me4_-PCnAZSTSm-eq5ZtCIA=s0 "google play")
 ](https://play.google.com/store/apps/details?id=com.sonnylab.appsense)
 
+## Demo Video
+
 [![Demo](https://img.youtube.com/vi/owujFOsOQeI/0.jpg)](https://www.youtube.com/watch?v=owujFOsOQeI)
 
 ## Inspiration
@@ -55,3 +57,10 @@ We built AppSense using React Native. We use blockly as an interface for the log
 ## Support us
 
 To support us please like our post at devpost https://devpost.com/software/appsense-d3a10z, or give star 🌟 to this repo. 😃
+
+## Credits
+
+- [@azaky](http://github.com/azaky)
+- [@alifradityar](http://github.com/alifradityar)
+- [@andresusanto](http://github.com/andresusanto)
+- [@sonnylazuardi](http://github.com/sonnylazuardi)
