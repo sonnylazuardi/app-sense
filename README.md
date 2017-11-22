@@ -9,8 +9,7 @@ Download the application
 
 ![promo](https://i.imgur.com/FgJUOyq.png)
 
-[![download](https://lh3.googleusercontent.com/v8DXc8EpIgPZCFJSJcE8me4_-PCnAZSTSm-eq5ZtCIA=s0 "google play")
-](https://play.google.com/store/apps/details?id=com.sonnylab.appsense)
+[Download APK](https://drive.google.com/file/d/1r3mtJakuoSQy_ZVqPWdIEhVo6xXV62wA/view?usp=sharing)
 
 ## Demo Video
 
